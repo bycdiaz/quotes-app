@@ -8,6 +8,7 @@ const connectionString = process.env.DB_URI;
 
 MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client) => {
   const db = client.db('quotesapp');
+  const quotesCollection = db.collection('quotes');
 
   try {
     app.listen(3000, function() {
@@ -23,7 +24,12 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
     });
 
     app.post('/quotes', (req, res) => {
-      console.log(req.body);
+      quotesCollection.insertOne(req.body)
+        .then(result => {
+          console.log(result);
+          res.redirect('/');
+        })
+        .catch(error => console.error(error))
     });
   } catch (error) {
     console.error(err);
