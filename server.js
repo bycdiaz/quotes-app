@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser= require('body-parser');
 const app = express();
 const MongoClient = require('mongodb').MongoClient;
+
 const connectionString = process.env.DB_URI;
 
 MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client) => {
@@ -17,6 +18,8 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
 
     console.log('Connected to Database!');
 
+    app.set('view engine', 'ejs');
+
     app.use(bodyParser.urlencoded({ extended: true }));
 
     app.get('/', (req, res) => {
@@ -26,7 +29,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true }, (err, client
         })
         .catch(error => console.error(error));
 
-      res.sendFile(__dirname + '/index.html');
+        res.render('index.ejs', {})
     });
 
     app.post('/quotes', (req, res) => {
